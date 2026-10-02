@@ -3,44 +3,43 @@
 ========================= */
 
 .navbar {
-  width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.navbar-container {
-  max-width: 1200px;
-  margin: auto;
   height: 70px;
-  padding: 0 24px;
-
+  padding: 0 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #111827;
+  box-sizing: border-box;
 }
 
-.logo {
-  font-size: 22px;
+.navbar-brand a {
+  color: white;
+  text-decoration: none;
+  font-size: 21px;
   font-weight: 700;
 }
 
-.nav-links {
+.navbar-links {
   display: flex;
-  gap: 30px;
+  align-items: center;
+  gap: 28px;
 }
 
-.nav-links a {
-  color: #4b5563;
+.navbar-links a {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 15px;
   font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-.nav-links a:hover {
-  color: #2563eb;
+.navbar-links a:hover {
+  color: white;
 }
 
+.navbar-links a.active {
+  color: white;
+}
 
 /* =========================
    HOME
@@ -609,4 +608,140 @@
   .final-cta h2 {
     font-size: 30px;
   }
+}
+
+.chat-page {
+  min-height: calc(100vh - 70px);
+  padding: 60px 20px;
+}
+
+.chat-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.chat-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.chat-header h1 {
+  font-size: 42px;
+  margin: 15px 0;
+}
+
+.chat-header p {
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+.chat-badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: #eee;
+}
+
+.question-box {
+  padding: 25px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background: white;
+}
+
+.question-box textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.question-box button {
+  margin-top: 15px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.question-box button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #ffe5e5;
+  color: #b00020;
+}
+
+.answer-section {
+  margin-top: 30px;
+}
+
+.answer-card,
+.sources-card {
+  padding: 25px;
+  margin-bottom: 25px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background: white;
+}
+
+.answer-card h2,
+.sources-card h2 {
+  margin-top: 0;
+}
+
+.markdown-content {
+  line-height: 1.7;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 25px;
+}
+
+.markdown-content code {
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #f1f1f1;
+}
+
+.source-item {
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.source-item:last-child {
+  border-bottom: none;
+}
+
+.source-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.source-header span {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.source-item p {
+  line-height: 1.6;
+  opacity: 0.8;
 }

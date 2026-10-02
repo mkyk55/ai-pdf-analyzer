@@ -1,115 +1,248 @@
-# 🤖 AI PDF Analyzer
+# AI PDF Analyzer
 
-An AI-powered document intelligence application that allows users to upload PDF documents and automatically generate structured, easy-to-understand summaries using **FastAPI, React, TypeScript, PyMuPDF, and OpenAI**.
+An AI-powered PDF analysis and document Q&A application built with **React, TypeScript, FastAPI, OpenAI, embeddings, and Retrieval-Augmented Generation (RAG)**.
 
-The project demonstrates an end-to-end AI application workflow — from document upload and text extraction to LLM-powered analysis and Markdown rendering.
-
----
-
-## 🚀 Features
-
-* 📄 Upload PDF documents
-* 🔍 Extract text from PDFs using PyMuPDF
-* 🤖 Analyze document content using OpenAI
-* 📝 Generate structured Markdown summaries
-* 📌 Extract key points and important facts
-* 💡 Generate an executive summary and conclusion
-* ⚡ Real-time analysis status and loading indicator
-* 🎨 Responsive React + TypeScript interface
-* 🔗 REST API built with FastAPI
-* 📚 Interactive Swagger API documentation
-* 🔐 API key kept securely on the backend
+The application allows users to upload a PDF, extract and process its content, generate an AI summary, and ask natural-language questions about the document.
 
 ---
 
-## 🏗️ Architecture
+## 🚀 Project Overview
+
+AI PDF Analyzer converts unstructured PDF documents into searchable, understandable information.
+
+The application currently supports:
+
+* PDF upload
+* PDF text extraction
+* AI-generated Markdown summaries
+* Document chunking
+* Text embeddings
+* In-memory vector storage
+* Semantic similarity search
+* RAG-based question answering
+* Source chunk visibility
+* React-based document chat interface
+* FastAPI REST APIs
+* Swagger/OpenAPI documentation
+
+---
+
+## 🏗️ Current Architecture
 
 ```text
-                    ┌─────────────────────┐
-                    │   React + TypeScript │
-                    │      Frontend       │
-                    └──────────┬──────────┘
-                               │
-                         PDF Upload
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │       FastAPI       │
-                    │       Backend       │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │      PyMuPDF        │
-                    │   Text Extraction   │
-                    └──────────┬──────────┘
-                               │
-                         Document Text
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │      OpenAI API     │
-                    │    AI Analysis      │
-                    └──────────┬──────────┘
-                               │
-                       Markdown Summary
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │   React Markdown    │
-                    │    Result Viewer    │
-                    └─────────────────────┘
+                    React + TypeScript
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+        Analyze PDF                  Chat with PDF
+             │                           │
+             ▼                           ▼
+       POST /analyze-pdf             POST /ask
+             │                           │
+             ▼                           ▼
+       PDF Text Extraction        Question Embedding
+             │                           │
+             ▼                           ▼
+          Chunking                Vector Similarity
+             │                           │
+             ▼                           ▼
+        Embeddings                  Top-K Chunks
+             │                           │
+             ▼                           ▼
+       Vector Store ─────────────► OpenAI
+                                         │
+                                         ▼
+                                  Grounded Answer
 ```
 
 ---
 
-## 🛠️ Tech Stack
+# ✨ Features
 
-### Frontend
+## 1. PDF Upload
 
-* React
-* TypeScript
-* Vite
-* React Router
-* React Markdown
-* CSS
+Users can upload PDF documents through the React frontend.
 
-### Backend
-
-* Python
-* FastAPI
-* Uvicorn
-* PyMuPDF
-* Pydantic
-* Python-dotenv
-
-### AI
-
-* OpenAI API
-* LLM-based document analysis
-* Structured Markdown generation
+The FastAPI backend validates the uploaded file and extracts its text using PyMuPDF.
 
 ---
 
-## 📁 Project Structure
+## 2. AI PDF Summary
+
+The `/analyze-pdf` endpoint:
+
+```text
+PDF
+ ↓
+Text Extraction
+ ↓
+OpenAI
+ ↓
+Markdown Summary
+```
+
+The generated summary contains:
+
+* Executive Summary
+* Key Points
+* Important Facts
+* Conclusion
+
+---
+
+## 3. Document Chunking
+
+Large documents are divided into smaller overlapping chunks.
+
+Current implementation:
+
+```python
+chunk_size = 1000
+chunk_overlap = 200
+```
+
+Example:
+
+```text
+Document
+   │
+   ├── Chunk 1
+   ├── Chunk 2
+   ├── Chunk 3
+   └── Chunk 4
+```
+
+Overlapping chunks help preserve context between neighboring sections.
+
+---
+
+## 4. Embeddings
+
+Each document chunk is converted into a numerical vector representation.
+
+```text
+Text Chunk
+    ↓
+Embedding Model
+    ↓
+Vector
+```
+
+The embedding implementation is located at:
+
+```text
+backend/app/rag/embeddings.py
+```
+
+---
+
+## 5. Vector Store
+
+The project currently uses a simple in-memory vector store.
+
+Location:
+
+```text
+backend/app/rag/vector_store.py
+```
+
+It stores:
+
+```text
+Text
+Embedding
+Metadata
+```
+
+and performs cosine similarity search.
+
+```text
+Query Vector
+     ↓
+Compare with stored vectors
+     ↓
+Calculate similarity
+     ↓
+Sort results
+     ↓
+Return Top-K
+```
+
+This implementation is intentionally simple so the underlying RAG concepts are easy to understand.
+
+---
+
+# 🤖 RAG Pipeline
+
+The current Retrieval-Augmented Generation pipeline is:
+
+```text
+                 PDF
+                  │
+                  ▼
+          Extract Text
+                  │
+                  ▼
+              Chunking
+                  │
+                  ▼
+             Embeddings
+                  │
+                  ▼
+            Vector Store
+                  │
+                  │
+          User Question
+                  │
+                  ▼
+        Question Embedding
+                  │
+                  ▼
+         Similarity Search
+                  │
+                  ▼
+            Top-K Chunks
+                  │
+                  ▼
+             OpenAI LLM
+                  │
+                  ▼
+            Final Answer
+```
+
+The application instructs the generation model to answer using the retrieved document context rather than relying on unrelated external knowledge.
+
+---
+
+# 📁 Project Structure
 
 ```text
 ai-pdf-analyzer/
 │
 ├── backend/
+│   │
 │   ├── app/
 │   │   ├── __init__.py
 │   │   ├── main.py
 │   │   ├── config.py
 │   │   ├── pdf_service.py
 │   │   ├── ai_service.py
-│   │   └── models.py
+│   │   ├── models.py
+│   │   │
+│   │   └── rag/
+│   │       ├── __init__.py
+│   │       ├── chunking.py
+│   │       ├── embeddings.py
+│   │       ├── vector_store.py
+│   │       ├── rag_service.py
+│   │       └── generation.py
 │   │
 │   ├── .env
 │   ├── .gitignore
 │   └── requirements.txt
 │
 ├── frontend/
+│   │
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Navbar.tsx
@@ -117,7 +250,8 @@ ai-pdf-analyzer/
 │   │   │
 │   │   ├── pages/
 │   │   │   ├── Home.tsx
-│   │   │   └── AnalyzePDF.tsx
+│   │   │   ├── AnalyzePDF.tsx
+│   │   │   └── ChatPDF.tsx
 │   │   │
 │   │   ├── App.tsx
 │   │   ├── App.css
@@ -134,58 +268,176 @@ ai-pdf-analyzer/
 
 ---
 
-# ⚙️ Getting Started
+# 🛠️ Technology Stack
 
-## 1. Clone the Repository
+## Frontend
 
-```bash
-git clone https://github.com/mkyk55/ai-pdf-analyzer.git
+* React
+* TypeScript
+* Vite
+* React Router
+* React Markdown
+* CSS
 
-cd ai-pdf-analyzer
+## Backend
+
+* Python
+* FastAPI
+* Pydantic
+* Uvicorn
+* PyMuPDF
+
+## AI
+
+* OpenAI API
+* Embeddings
+* LLM-based generation
+* Retrieval-Augmented Generation
+
+## Current Vector Search
+
+* Custom Python in-memory vector store
+* Cosine similarity
+
+---
+
+# 🔌 API Endpoints
+
+## Health Check
+
+```http
+GET /
+```
+
+Example response:
+
+```json
+{
+  "message": "AI PDF Analyzer API is running"
+}
 ```
 
 ---
 
-# 🐍 Backend Setup
+## Analyze PDF
 
-Navigate to the backend:
+```http
+POST /analyze-pdf
+```
+
+Accepts:
+
+```text
+multipart/form-data
+file = PDF
+```
+
+Processing:
+
+```text
+PDF
+ ↓
+Extract text
+ ↓
+Generate summary
+ ↓
+Chunk document
+ ↓
+Generate embeddings
+ ↓
+Store vectors
+```
+
+Example response:
+
+```json
+{
+  "filename": "document.pdf",
+  "summary": "# Executive Summary\n..."
+}
+```
+
+---
+
+## Ask Question
+
+```http
+POST /ask
+```
+
+Request:
+
+```json
+{
+  "question": "What is the main purpose of this document?",
+  "top_k": 3
+}
+```
+
+Response:
+
+```json
+{
+  "question": "What is the main purpose of this document?",
+  "answer": "The document explains...",
+  "sources": [
+    {
+      "filename": "document.pdf",
+      "chunk_index": 0,
+      "score": 0.82,
+      "text": "..."
+    }
+  ]
+}
+```
+
+---
+
+# 🖥️ Frontend Routes
+
+The React application currently provides:
+
+| Route          | Purpose                              |
+| -------------- | ------------------------------------ |
+| `/`            | Home page                            |
+| `/analyze-pdf` | Upload and analyze PDF               |
+| `/chat`        | Ask questions about the uploaded PDF |
+
+The dedicated Chat interface communicates with:
+
+```text
+POST /ask
+```
+
+---
+
+# ⚙️ Installation
+
+## Backend
+
+Navigate to:
 
 ```bash
 cd backend
 ```
 
-## Create a Virtual Environment
+Create a virtual environment:
 
-### Windows
-
-```powershell
+```bash
 python -m venv venv
 ```
 
-Activate it:
+Activate it on Windows:
 
 ```powershell
 venv\Scripts\activate
 ```
 
-### macOS/Linux
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
----
-
-## Install Dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
-
----
-
-## Configure Environment Variables
 
 Create:
 
@@ -196,30 +448,26 @@ backend/.env
 Add:
 
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=your_api_key_here
 ```
 
-⚠️ **Never commit your real API key to GitHub.**
-
-The `.env` file should remain in `.gitignore`.
+Do not commit `.env` to GitHub.
 
 ---
 
-## Start the Backend
-
-From the `backend` directory:
+## Start Backend
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The API will be available at:
+Backend:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Swagger documentation:
+Swagger:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -233,9 +481,7 @@ http://127.0.0.1:8000/redoc
 
 ---
 
-# ⚛️ Frontend Setup
-
-Open another terminal.
+# 🎨 Frontend Setup
 
 Navigate to:
 
@@ -249,13 +495,13 @@ Install dependencies:
 npm install
 ```
 
-Start the development server:
+Start development server:
 
 ```bash
 npm run dev
 ```
 
-The frontend will normally be available at:
+Frontend:
 
 ```text
 http://localhost:5173
@@ -263,89 +509,68 @@ http://localhost:5173
 
 ---
 
-# 📄 How to Use
+# 🧪 Testing the RAG Pipeline
 
-1. Open the application.
-2. Navigate to **Analyze PDF**.
-3. Select a PDF document.
-4. Click **Analyze PDF**.
-5. The frontend sends the document to the FastAPI backend.
-6. PyMuPDF extracts the document text.
-7. The extracted text is sent to the OpenAI API.
-8. The AI generates a structured Markdown summary.
-9. The frontend renders the Markdown result.
+The individual RAG components can be tested independently.
 
-The generated analysis contains:
+### Chunking
 
-```text
-Executive Summary
-        ↓
-Key Points
-        ↓
-Important Facts
-        ↓
-Conclusion
+```python
+from app.rag.chunking import split_text
+
+chunks = split_text(document_text)
+
+print(len(chunks))
 ```
 
----
+### Embeddings
 
-# 🔌 API
+```python
+from app.rag.embeddings import create_embedding
 
-## Analyze PDF
+embedding = create_embedding(
+    "Python is used for backend development."
+)
 
-### Endpoint
-
-```http
-POST /analyze-pdf
+print(type(embedding))
+print(len(embedding))
 ```
 
-### Request
+### Vector Store
 
-Multipart form-data:
+```python
+from app.rag.vector_store import VectorStore
 
-```text
-file: <PDF document>
+store = VectorStore()
+
+store.add(
+    texts=chunks,
+    embeddings=embeddings
+)
+
+results = store.search(
+    query_embedding=query_embedding,
+    top_k=3
+)
 ```
 
-### Example Response
+### RAG Service
 
-```json
-{
-  "filename": "example.pdf",
-  "summary": "# Executive Summary\n\nThis document..."
-}
+```python
+from app.rag.rag_service import RAGService
+
+rag = RAGService()
+
+rag.index_document(
+    text=document_text,
+    filename="document.pdf"
+)
+
+results = rag.retrieve(
+    "What is the document about?",
+    top_k=3
+)
 ```
-
----
-
-# 🧠 AI Processing
-
-The current AI pipeline uses the following flow:
-
-```text
-PDF
- ↓
-Text Extraction
- ↓
-Document Text
- ↓
-Prompt Construction
- ↓
-OpenAI API
- ↓
-AI Generated Analysis
- ↓
-Markdown
- ↓
-React Markdown Renderer
-```
-
-The AI is instructed to produce a consistent structure containing:
-
-* Executive Summary
-* Key Points
-* Important Facts
-* Conclusion
 
 ---
 
@@ -354,148 +579,216 @@ The AI is instructed to produce a consistent structure containing:
 The OpenAI API key is stored only on the backend.
 
 ```text
-React Frontend
-      │
-      │ PDF
-      ▼
-FastAPI Backend
-      │
-      │ API Key
-      ▼
-OpenAI API
+React
+  │
+  │ No API key
+  ▼
+FastAPI
+  │
+  │ API key
+  ▼
+OpenAI
 ```
 
-The frontend never receives or exposes the OpenAI API key.
+The API key should never be placed in:
 
-For production deployments, environment variables or a secure secret-management solution should be used.
-
----
-
-# 🚧 Current Limitations
-
-The current version focuses on text-based PDF documents.
-
-Potential limitations include:
-
-* Scanned/image-only PDFs require OCR.
-* Very large documents may exceed model context limits.
-* The current version processes the complete extracted document rather than using retrieval.
-* No persistent document storage yet.
-* No user authentication yet.
+* React code
+* TypeScript files
+* `vite.config.ts`
+* GitHub
+* Browser local storage
+* Public frontend environment variables
 
 ---
 
-# 🛣️ Roadmap
+# ⚠️ Current Limitations
 
-The project is being developed toward a more complete **AI Document Intelligence Platform**.
+The current implementation is intentionally an educational/prototype architecture.
 
-### Phase 1 — Core Application
+### In-memory vector store
 
-* [x] React frontend
-* [x] TypeScript
-* [x] FastAPI backend
-* [x] PDF upload
-* [x] PDF text extraction
-* [x] OpenAI integration
-* [x] Markdown summaries
-* [x] Swagger API documentation
-
-### Phase 2 — Advanced AI
-
-* [ ] Document chunking
-* [ ] Embeddings
-* [ ] Vector database
-* [ ] RAG pipeline
-* [ ] Ask questions about documents
-* [ ] Source/page citations
-* [ ] Multi-document analysis
-* [ ] Conversation history
-
-### Phase 3 — Production Engineering
-
-* [ ] Authentication
-* [ ] PostgreSQL
-* [ ] Document storage
-* [ ] Background processing
-* [ ] Rate limiting
-* [ ] Logging and monitoring
-* [ ] Docker
-* [ ] CI/CD
-* [ ] Azure deployment
-
-### Phase 4 — Advanced Document Intelligence
-
-* [ ] OCR support
-* [ ] Table extraction
-* [ ] Document classification
-* [ ] Semantic search
-* [ ] Document comparison
-* [ ] AI-generated questions
-* [ ] Structured data extraction
-* [ ] Agentic document workflows
-
----
-
-# 🎯 Project Goals
-
-This project is designed to demonstrate practical skills in:
-
-* Full-stack AI application development
-* LLM integration
-* REST API development
-* Document processing
-* Prompt engineering
-* AI application architecture
-* React + TypeScript
-* Python backend development
-* RAG architecture
-* Cloud deployment
-* Production-oriented AI engineering
-
----
-
-# 📈 Future Architecture
-
-The long-term architecture will evolve toward:
+All vectors disappear when the backend restarts.
 
 ```text
-                    React + TypeScript
-                           │
-                           ▼
-                      FastAPI API
-                           │
-                    ┌──────┴──────┐
-                    │             │
-                    ▼             ▼
-              Authentication   PostgreSQL
-                                  │
-                                  ▼
-                         Document Storage
-                                  │
-                                  ▼
-                         Text Extraction
-                                  │
-                                  ▼
-                           Chunking
-                                  │
-                                  ▼
-                          Embeddings
-                                  │
-                                  ▼
-                         Vector Database
-                                  │
-                                  ▼
-                              RAG
-                                  │
-                                  ▼
-                            OpenAI LLM
-                                  │
-                                  ▼
-                       Structured Response
-                                  │
-                                  ▼
-                         React Application
+FastAPI restart
+      ↓
+Vector Store cleared
 ```
+
+### Single active document
+
+The current architecture clears the vector store when a new PDF is uploaded.
+
+### No authentication
+
+There is currently no user authentication or authorization.
+
+### No persistent database
+
+Documents, chunks, embeddings, and metadata are not persisted.
+
+### Basic chunking
+
+The current chunking strategy is character-based rather than semantic/token-aware.
+
+### No page-level citations
+
+The current metadata tracks chunk indexes but does not yet map retrieved chunks back to PDF page numbers.
+
+---
+
+# 🚧 Roadmap
+
+## Phase 1 — Core RAG
+
+* [x] PDF extraction
+* [x] AI summarization
+* [x] Chunking
+* [x] Embeddings
+* [x] Vector store
+* [x] Cosine similarity
+* [x] Semantic retrieval
+* [x] RAG generation
+* [x] `/ask` endpoint
+* [x] React Chat with PDF page
+
+## Phase 2 — Production RAG
+
+* [ ] Document IDs
+* [ ] Multiple document support
+* [ ] Persistent vector database
+* [ ] FAISS / Qdrant / pgvector
+* [ ] Metadata filtering
+* [ ] Page-level source references
+* [ ] Better chunking
+* [ ] Retrieval score threshold
+* [ ] Conversation history
+
+## Phase 3 — Full AI Application
+
+* [ ] User authentication
+* [ ] PostgreSQL
+* [ ] Document storage
+* [ ] User-specific documents
+* [ ] Chat history
+* [ ] Streaming responses
+* [ ] Background document processing
+* [ ] Rate limiting
+* [ ] Error monitoring
+* [ ] Production logging
+
+## Phase 4 — Deployment
+
+```text
+React
+   ↓
+Azure / Static Hosting
+   ↓
+FastAPI
+   ↓
+Docker
+   ↓
+Azure App Service
+   ↓
+PostgreSQL
+   ↓
+Vector Database
+   ↓
+OpenAI
+```
+
+---
+
+# 🎯 Future Architecture
+
+The target production architecture is:
+
+```text
+                         User
+                          │
+                          ▼
+                 React + TypeScript
+                          │
+                          ▼
+                     FastAPI
+                          │
+                ┌─────────┴─────────┐
+                │                   │
+                ▼                   ▼
+        Authentication          API Layer
+                │                   │
+                └─────────┬─────────┘
+                          │
+                          ▼
+                     PostgreSQL
+                          │
+                          ▼
+                  Document Storage
+                          │
+                          ▼
+                  Document Processing
+                          │
+                          ▼
+                      Chunking
+                          │
+                          ▼
+                     Embeddings
+                          │
+                          ▼
+               Vector Database
+                 / Qdrant / pgvector
+                          │
+                          ▼
+                    Retrieval
+                          │
+                          ▼
+                       OpenAI
+                          │
+                          ▼
+                  Grounded Response
+                          │
+                          ▼
+                     React UI
+```
+
+---
+
+# 💡 Possible Use Cases
+
+The architecture can be extended for:
+
+* Legal document analysis
+* Contracts
+* Technical documentation
+* Research papers
+* Financial reports
+* HR policies
+* Company documentation
+* Compliance documents
+* Government documents
+* Internal knowledge bases
+
+---
+
+# 🧠 What This Project Demonstrates
+
+This project demonstrates practical AI engineering concepts including:
+
+* REST API development
+* React + TypeScript
+* Python backend engineering
+* LLM integration
+* Embeddings
+* Vector search
+* Semantic retrieval
+* RAG architecture
+* Prompt engineering
+* Document processing
+* API design
+* Source-aware responses
+* Full-stack AI application development
+
+The goal is to evolve this project from a basic PDF summarizer into a **production-oriented document intelligence platform**.
 
 ---
 
@@ -503,18 +796,28 @@ The long-term architecture will evolve toward:
 
 **Mayank Kumar**
 
-GitHub: **[@mkyk55](https://github.com/mkyk55)**
+Python Developer | AI Engineering | Generative AI | RAG | FastAPI | React
 
 ---
 
-## ⭐ Contributing
+## ⭐ Project Status
 
-Contributions, suggestions, and improvements are welcome.
+**Current status: Active Development**
 
-If you find the project useful, consider giving it a ⭐ on GitHub.
+The project is being developed incrementally to demonstrate the complete lifecycle of an AI-powered application:
 
----
-
-## 📜 License
-
-This project is intended for learning, experimentation, and portfolio development.
+```text
+Prototype
+   ↓
+RAG
+   ↓
+Persistent Vector Database
+   ↓
+Authentication
+   ↓
+Production Architecture
+   ↓
+Docker
+   ↓
+Cloud Deployment
+```
